@@ -534,6 +534,53 @@
   .prueba-icon.dial { background: #DBEAFE; color: #1E40AF; }
   .prueba-icon.orden { background: #D1FAE5; color: #065F46; }
 
+  /* name modal */
+  .name-modal-overlay {
+    position: fixed; inset: 0; background: rgba(46,42,38,0.55); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; z-index: 999; padding: 24px;
+  }
+  .name-modal {
+    background: var(--paper); border-radius: 24px; padding: 36px 28px 28px;
+    max-width: 360px; width: 100%; text-align: center;
+    box-shadow: 0 24px 64px rgba(46,42,38,0.22);
+    animation: modal-in .22s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes modal-in { from { transform: scale(.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .name-modal-hanzi { font-size: 52px; line-height: 1; margin-bottom: 8px; color: var(--lacquer); }
+  .name-modal-title { font-size: 22px; font-weight: 800; margin: 0 0 6px; }
+  .name-modal-sub { font-size: 13px; color: var(--ink-soft); font-weight: 600; margin: 0 0 20px; }
+  .name-modal-input {
+    width: 100%; border: 2px solid var(--paper-deep); border-radius: 12px;
+    padding: 13px 16px; font-size: 17px; font-family: 'Nunito', sans-serif;
+    font-weight: 700; background: #fff; outline: none; color: var(--ink);
+    transition: border-color .15s;
+  }
+  .name-modal-input:focus { border-color: var(--jade); }
+
+  /* greeting bar */
+  .greeting-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 20px; background: var(--jade-light);
+    font-size: 14px; font-weight: 700; color: var(--jade-dark);
+  }
+  .change-name-btn {
+    background: none; border: none; font-size: 16px; cursor: pointer; padding: 2px 6px;
+    border-radius: 8px; opacity: 0.7; transition: opacity .15s;
+  }
+  .change-name-btn:hover { opacity: 1; }
+
+  .download-resumen-btn {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; margin-top: 20px;
+    background: linear-gradient(135deg, var(--jade) 0%, var(--jade-dark) 100%);
+    color: #fff; border: none; border-radius: var(--radius);
+    padding: 16px 20px; cursor: pointer; text-align: left;
+    box-shadow: 0 4px 16px rgba(58,125,110,0.30);
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .download-resumen-btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(58,125,110,0.20); }
+  .download-resumen-btn:hover { box-shadow: 0 6px 20px rgba(58,125,110,0.40); }
+
   /* clasificador game */
   .clas-sentence {
     font-size: 20px; font-weight: 700; font-family: 'Noto Serif SC', serif;
@@ -741,6 +788,7 @@ const DEFAULT_VOCAB = {
 const html = React.createElement;
 const STORAGE_KEY = 'hanzi-practice-progress-v1';
 const VOCAB_KEY = 'hanzi-practice-vocab-v1';
+const NAME_KEY = 'hanzi-practice-name-v1';
 
 function loadVocab() {
   try {
@@ -814,12 +862,121 @@ const ORDEN_QUESTIONS = [
   { words: ['我有', '两个', '姐姐', '和', '一个', '弟弟'], correct: '我有两个姐姐和一个弟弟', es: 'Tengo dos hermanas mayores y un hermano menor', pinyin: 'Wǒ yǒu liǎng gè jiějie hé yī gè dìdi' },
 ];
 
+// ----------------- Descarga resumen -----------------
+function downloadResumen(vocab, progress, lessons, playerName) {
+  const date = new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' });
+  const pp = progress.prueba || {};
+
+  const scoreColor = (p) => p >= 80 ? '#3A7D6E' : p >= 50 ? '#E0A93B' : '#C1432B';
+  const star = (p) => p >= 80 ? '⭐' : p > 0 ? '🔸' : '—';
+
+  const lessonRows = lessons.map(id => {
+    const lp = progress.lessons[id] || {};
+    const theme = LESSON_THEMES[id] || { name: 'Lección ' + id };
+    const m = lp.match || 0, c = lp.cards || 0, q = lp.quiz || 0;
+    return `<tr>
+      <td><strong>Lección ${id}</strong><br><span style="font-size:12px;color:#6E645A">${theme.name}</span></td>
+      <td style="color:${scoreColor(m)};font-weight:800">${star(m)} ${m}%</td>
+      <td style="color:${scoreColor(c)};font-weight:800">${star(c)} ${c}%</td>
+      <td style="color:${scoreColor(q)};font-weight:800">${star(q)} ${q}%</td>
+    </tr>`;
+  }).join('');
+
+  const repasarSections = lessons.map(id => {
+    const lp = progress.lessons[id] || {};
+    const best = Math.max(lp.match || 0, lp.cards || 0, lp.quiz || 0);
+    if (best >= 80) return '';
+    const theme = LESSON_THEMES[id] || { name: 'Lección ' + id };
+    const words = vocab[id].map(w =>
+      `<tr><td style="font-family:'Noto Serif SC',serif;font-size:20px">${w.hanzi}</td><td style="color:#C1432B;font-weight:700">${w.pinyin}</td><td style="color:#6E645A">${w.es}</td></tr>`
+    ).join('');
+    return `<h3 style="margin:24px 0 8px;color:#2E2A26">Lección ${id} · ${theme.name} <span style="font-size:13px;color:#C1432B">(mejor: ${best}%)</span></h3>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:8px">${words}</table>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <title>Hanzi Practice · Resumen</title>
+  <style>
+    body{font-family:'Nunito',sans-serif;background:#FBF4E6;color:#2E2A26;max-width:700px;margin:40px auto;padding:0 24px}
+    h1{color:#C1432B;margin-bottom:4px} h2{color:#2E2A26;border-bottom:2px solid #F3E6CC;padding-bottom:8px;margin-top:32px}
+    table{width:100%;border-collapse:collapse} td,th{padding:10px 12px;border-bottom:1px solid #F3E6CC;text-align:left}
+    th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#6E645A}
+    .chip{display:inline-block;padding:4px 12px;border-radius:20px;font-weight:800;font-size:13px}
+    .ok{background:#DCEEE9;color:#235048} .warn{background:#F6E2B0;color:#8a5d12} .bad{background:#FDE4DD;color:#93301E}
+    @media print{body{background:#fff}}
+  </style></head><body>
+  <h1>汉字 Practice · Resumen de repaso</h1>
+  ${playerName ? `<p style="margin-top:0;font-size:18px">👋 <strong>${playerName}</strong></p>` : ''}
+  <p style="color:#6E645A;margin-top:0">汉语课 CUI · Nivel 2 · Ariel 老师 &nbsp;|&nbsp; ${date}</p>
+
+  <h2>📚 Lecciones</h2>
+  <table><thead><tr><th>Lección</th><th>Emparejar</th><th>Tarjetas</th><th>Quiz</th></tr></thead>
+  <tbody>${lessonRows}</tbody></table>
+
+  <h2>🧠 ¿Cuánto aprendiste?</h2>
+  <table><tbody>
+    <tr><td>Clasificadores</td><td style="color:${scoreColor(pp.clas||0)};font-weight:800">${star(pp.clas||0)} ${pp.clas||0}%</td></tr>
+    <tr><td>Completa el diálogo</td><td style="color:${scoreColor(pp.dialogo||0)};font-weight:800">${star(pp.dialogo||0)} ${pp.dialogo||0}%</td></tr>
+    <tr><td>Ordena la oración</td><td style="color:${scoreColor(pp.orden||0)};font-weight:800">${star(pp.orden||0)} ${pp.orden||0}%</td></tr>
+  </tbody></table>
+
+  ${repasarSections ? '<h2>📝 Palabras para repasar</h2>' + repasarSections : '<h2>✅ ¡Sin palabras pendientes!</h2><p>Superaste el 80% en todas las lecciones.</p>'}
+  </body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const safeName = playerName ? '-' + playerName.toLowerCase().replace(/\s+/g, '_') : '';
+  a.download = 'hanzi-resumen' + safeName + '-' + new Date().toISOString().slice(0,10) + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ----------------- Name Modal -----------------
+function NameModal({ onSave }) {
+  const [name, setName] = useState('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (trimmed) onSave(trimmed);
+  };
+  return html('div', { className: 'name-modal-overlay' },
+    html('div', { className: 'name-modal' },
+      html('div', { className: 'name-modal-hanzi hanzi-font' }, '你好！'),
+      html('h2', { className: 'name-modal-title' }, '¿Cómo te llamás?'),
+      html('p', { className: 'name-modal-sub' }, 'Ingresá tu nombre para personalizar tu experiencia de repaso'),
+      html('form', { onSubmit: handleSubmit },
+        html('input', {
+          className: 'name-modal-input',
+          type: 'text',
+          placeholder: 'Tu nombre...',
+          value: name,
+          autoFocus: true,
+          maxLength: 30,
+          onChange: (e) => setName(e.target.value),
+        }),
+        html('button', {
+          className: 'primary-btn',
+          type: 'submit',
+          disabled: !name.trim(),
+          style: { width: '100%', marginTop: 8 },
+        }, '¡Comenzar! →'),
+      ),
+    ),
+  );
+}
+
 // ----------------- App -----------------
 function App() {
   const [vocab, setVocab] = useState(loadVocab);
   const [progress, setProgress] = useState(loadProgress);
   const [screen, setScreen] = useState({ name: 'home' });
   const [lastResults, setLastResults] = useState({});
+  const [playerName, setPlayerName] = useState(() => localStorage.getItem(NAME_KEY) || '');
 
   useEffect(() => { saveProgress(progress); }, [progress]);
 
@@ -864,6 +1021,9 @@ function App() {
       onAdmin: () => setScreen({ name: 'admin' }),
       onPrueba: (game) => setScreen({ name: 'prueba', game }),
       pruebaProgress: progress.prueba || {},
+      onDownload: () => downloadResumen(vocab, progress, lessons, playerName),
+      playerName,
+      onChangeName: () => { localStorage.removeItem(NAME_KEY); setPlayerName(''); },
     });
   } else if (screen.name === 'lesson') {
     content = html(LessonMenu, {
@@ -912,17 +1072,25 @@ function App() {
         return next;
       });
     };
-    const gameProps = { onBack: () => setScreen({ name: 'home' }), onFinish: onPruebaFinish };
+    const gameProps = { onBack: () => setScreen({ name: 'home' }), onFinish: onPruebaFinish, playerName };
     if (screen.game === 'clas') content = html(ClasificadorGame, gameProps);
     else if (screen.game === 'dialogo') content = html(DialogoGame, gameProps);
     else if (screen.game === 'orden') content = html(OrdenGame, gameProps);
   }
 
-  return html('div', { className: 'app' }, content);
+  const handleSaveName = (name) => {
+    localStorage.setItem(NAME_KEY, name);
+    setPlayerName(name);
+  };
+
+  return html('div', { className: 'app' },
+    !playerName && html(NameModal, { onSave: handleSaveName }),
+    playerName && content,
+  );
 }
 
 // ----------------- Home -----------------
-function Home({ vocab, lessons, progress, totalWords, totalStars, onSelectLesson, onAdmin, onPrueba, pruebaProgress }) {
+function Home({ vocab, lessons, progress, totalWords, totalStars, onSelectLesson, onAdmin, onPrueba, pruebaProgress, onDownload, playerName, onChangeName }) {
   return html(React.Fragment, null,
     html('div', { className: 'topbar' },
       html('div', { className: 'brand' },
@@ -933,6 +1101,10 @@ function Home({ vocab, lessons, progress, totalWords, totalStars, onSelectLesson
         ),
       ),
       html('button', { className: 'icon-btn', onClick: onAdmin, title: 'Administrar vocabulario' }, '⚙')
+    ),
+    playerName && html('div', { className: 'greeting-bar' },
+      html('span', null, '👋 ¡Hola, ', html('strong', null, playerName), '!'),
+      html('button', { className: 'change-name-btn', onClick: onChangeName, title: 'Cambiar nombre' }, '✏️'),
     ),
     html('main', null,
       html('div', { className: 'score-strip' },
@@ -990,7 +1162,17 @@ function Home({ vocab, lessons, progress, totalWords, totalStars, onSelectLesson
             hasStar && html('div', { style: { fontSize: 20 } }, '⭐'),
           );
         })
-      )
+      ),
+      html('button', {
+        className: 'download-resumen-btn',
+        onClick: onDownload,
+      },
+        html('span', { style: { fontSize: 22 } }, '📥'),
+        html('span', null,
+          html('div', { style: { fontWeight: 800, fontSize: 15 } }, 'Descargar mi resumen de repaso'),
+          html('div', { style: { fontSize: 12, opacity: 0.75, fontWeight: 600 } }, 'Aciertos, errores y palabras para repasar'),
+        ),
+      ),
     )
   );
 }
@@ -1502,12 +1684,12 @@ function AdminPanel({ vocab, onBack, onVocabUpdate }) {
 }
 
 // ----------------- Prueba: resultado -----------------
-function PruebaResult({ percent, total, correct, missed, onRetry, onBack }) {
+function PruebaResult({ percent, total, correct, missed, onRetry, onBack, playerName }) {
   let title;
-  if (percent === 100) title = '¡Perfecto!';
-  else if (percent >= 80) title = '¡Muy bien!';
-  else if (percent >= 60) title = 'Buen intento';
-  else title = 'Seguí practicando';
+  if (percent === 100) title = (playerName ? '¡Perfecto, ' + playerName + '!' : '¡Perfecto!');
+  else if (percent >= 80) title = (playerName ? '¡Muy bien, ' + playerName + '!' : '¡Muy bien!');
+  else if (percent >= 60) title = 'Buen intento' + (playerName ? ', ' + playerName : '');
+  else title = 'Seguí practicando' + (playerName ? ', ' + playerName : '');
   return html('main', { style: { paddingTop: '18px', paddingBottom: 40 } },
     html('div', { className: 'result-screen' },
       html('div', { className: 'result-seal hanzi-font' + (percent === 100 ? ' celebrate' : '') },
@@ -1533,7 +1715,7 @@ function PruebaResult({ percent, total, correct, missed, onRetry, onBack }) {
 }
 
 // ----------------- Prueba: Clasificadores -----------------
-function ClasificadorGame({ onBack, onFinish }) {
+function ClasificadorGame({ onBack, onFinish, playerName }) {
   const questions = useMemo(() => shuffle(CLASIFICADOR_QUESTIONS), []);
   const [index, setIndex] = useState(0);
   const [opts, setOpts] = useState(() => shuffle([...questions[0].options]));
@@ -1549,31 +1731,35 @@ function ClasificadorGame({ onBack, onFinish }) {
   const fullSentence = q.sentence.replace('___', q.answer);
   const fullPinyin = q.pinyin.replace('___', q.answer);
 
+  const [newCorrectRef, setNewCorrectRef] = useState(0);
+
   const handlePick = (opt) => {
     if (selected) return;
     setSelected(opt);
     const ok = opt === q.answer;
-    const newCorrect = correct + (ok ? 1 : 0);
-    if (ok) setCorrect(newCorrect);
+    const nc = correct + (ok ? 1 : 0);
+    setNewCorrectRef(nc);
+    if (ok) setCorrect(nc);
     else {
       setErrors(e => e + 1);
       setMissed(m => [...m, { hanzi: fullSentence, pinyin: fullPinyin, es: q.hint }]);
     }
-    setTimeout(() => {
-      const next = index + 1;
-      if (next >= questions.length) {
-        const pct = Math.round((newCorrect / questions.length) * 100);
-        if (onFinish) onFinish(pct);
-        setDone(true);
-      } else { setIndex(next); setOpts(shuffle([...questions[next].options])); setSelected(null); }
-    }, 2000);
+  };
+
+  const handleNext = () => {
+    const next = index + 1;
+    if (next >= questions.length) {
+      const pct = Math.round((newCorrectRef / questions.length) * 100);
+      if (onFinish) onFinish(pct);
+      setDone(true);
+    } else { setIndex(next); setOpts(shuffle([...questions[next].options])); setSelected(null); }
   };
 
   if (done) return html(PruebaResult, {
     percent: Math.round((correct / questions.length) * 100),
     total: questions.length, correct, missed,
     onRetry: () => { setIndex(0); setOpts(shuffle([...questions[0].options])); setSelected(null); setCorrect(0); setErrors(0); setMissed([]); setDone(false); },
-    onBack,
+    onBack, playerName,
   });
 
   return html(React.Fragment, null,
@@ -1595,14 +1781,19 @@ function ClasificadorGame({ onBack, onFinish }) {
       html('div', { className: 'clas-pinyin' }, selected ? fullPinyin : q.pinyin),
       html('div', { className: 'clas-hint' }, q.hint),
       selected
-        ? html('div', { style: { borderRadius: 16, padding: '18px 20px', textAlign: 'center', fontWeight: 800, marginBottom: 12,
-            background: isCorrect ? 'var(--jade-light)' : '#FDE4DD',
-            color: isCorrect ? 'var(--jade-dark)' : 'var(--lacquer-dark)' } },
-            html('div', { style: { fontSize: 40 } }, isCorrect ? '✓' : '✗'),
-            html('div', { style: { fontSize: 22, marginTop: 4 } }, isCorrect ? '¡Correcto!' : 'Incorrecto'),
-            html('div', { className: 'hanzi-font', style: { fontSize: 26, marginTop: 10 } }, fullSentence),
-            html('div', { style: { fontSize: 14, marginTop: 4, opacity: 0.85 } }, fullPinyin),
-            html('div', { style: { fontSize: 13, marginTop: 2, opacity: 0.75 } }, q.hint),
+        ? html(React.Fragment, null,
+            html('div', { style: { borderRadius: 16, padding: '18px 20px', textAlign: 'center', fontWeight: 800, marginBottom: 12,
+                background: isCorrect ? 'var(--jade-light)' : '#FDE4DD',
+                color: isCorrect ? 'var(--jade-dark)' : 'var(--lacquer-dark)' } },
+              html('div', { style: { fontSize: 40 } }, isCorrect ? '✓' : '✗'),
+              html('div', { style: { fontSize: 22, marginTop: 4 } }, isCorrect ? '¡Correcto!' : 'Incorrecto'),
+              html('div', { className: 'hanzi-font', style: { fontSize: 26, marginTop: 10 } }, fullSentence),
+              html('div', { style: { fontSize: 14, marginTop: 4, opacity: 0.85 } }, fullPinyin),
+              html('div', { style: { fontSize: 13, marginTop: 2, opacity: 0.75 } }, q.hint),
+            ),
+            html('button', { className: 'primary-btn', onClick: handleNext },
+              index + 1 >= questions.length ? 'Ver resultado' : 'Siguiente →'
+            )
           )
         : html('div', { className: 'quiz-options' },
             opts.map(opt => html('button', { key: opt, className: 'quiz-option', onClick: () => handlePick(opt) }, opt))
@@ -1612,7 +1803,7 @@ function ClasificadorGame({ onBack, onFinish }) {
 }
 
 // ----------------- Prueba: Diálogo -----------------
-function DialogoGame({ onBack, onFinish }) {
+function DialogoGame({ onBack, onFinish, playerName }) {
   const questions = useMemo(() => shuffle(DIALOGO_QUESTIONS), []);
   const [index, setIndex] = useState(0);
   const [opts, setOpts] = useState(() => shuffle([...questions[0].options]));
@@ -1651,7 +1842,7 @@ function DialogoGame({ onBack, onFinish }) {
     percent: Math.round((correct / questions.length) * 100),
     total: questions.length, correct, missed,
     onRetry: () => { setIndex(0); setOpts(shuffle([...questions[0].options])); setSelected(null); setCorrect(0); setErrors(0); setMissed([]); setDone(false); },
-    onBack,
+    onBack, playerName,
   });
 
   const renderLine = (speaker, text, hasBlank) => {
@@ -1716,7 +1907,7 @@ function DialogoGame({ onBack, onFinish }) {
 // ----------------- Prueba: Ordenar -----------------
 const CIRCLE_NUMS = ['①','②','③','④','⑤','⑥','⑦','⑧'];
 
-function OrdenGame({ onBack, onFinish }) {
+function OrdenGame({ onBack, onFinish, playerName }) {
   const questions = useMemo(() => shuffle(ORDEN_QUESTIONS), []);
   const [index, setIndex] = useState(0);
   const [placed, setPlaced] = useState([]);
@@ -1772,7 +1963,7 @@ function OrdenGame({ onBack, onFinish }) {
     percent: Math.round((correct / questions.length) * 100),
     total: questions.length, correct, missed,
     onRetry: () => { setIndex(0); setCorrect(0); setErrors(0); setMissed([]); setDone(false); loadQ(0); },
-    onBack,
+    onBack, playerName,
   });
 
   return html(React.Fragment, null,
