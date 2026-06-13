@@ -557,7 +557,7 @@
     background: #fff; border-radius: 16px; box-shadow: var(--shadow-paper);
     padding: 18px 16px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px;
   }
-  .dialogo-line { font-size: 15px; font-weight: 700; line-height: 1.7; }
+  .dialogo-line { font-size: 18px; font-weight: 700; line-height: 1.8; }
   .dialogo-speaker { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; margin-right: 6px; }
   .dialogo-speaker.a { color: var(--lacquer-dark); }
   .dialogo-speaker.b { color: var(--jade-dark); }
@@ -585,7 +585,7 @@
   .orden-hint { font-size: 12px; color: var(--ink-soft); font-weight: 700; text-align: center; margin-bottom: 12px; }
   .word-chip {
     background: #fff; border: 2px solid var(--paper-deep); border-radius: 10px;
-    padding: 8px 14px; font-size: 15px; font-weight: 700; cursor: pointer;
+    padding: 10px 16px; font-size: 18px; font-weight: 700; cursor: pointer;
     font-family: 'Noto Serif SC', serif; transition: transform 0.1s; display: inline-block;
   }
   .word-chip:active { transform: scale(0.94); }
@@ -791,16 +791,16 @@ const CLASIFICADOR_QUESTIONS = [
 ];
 
 const DIALOGO_QUESTIONS = [
-  { context: 'Buscas el comedor en el campus', A: '请问，餐厅___哪儿？', B: '在二层。', blankIn: 'A', answer: '在', options: ['在', '是', '去', '有'], explanation: '在 + 哪儿 pregunta la ubicación de un lugar.' },
-  { context: 'Preguntas si alguien está en casa', A: '请问，李明___吗？', B: '对不起，他不在。', blankIn: 'A', answer: '在', options: ['在', '来', '去', '好'], explanation: '在吗 = ¿está presente? / ¿está en casa?' },
-  { context: 'Alguien choca contigo', A: '对不起！', B: '___。', blankIn: 'B', answer: '没关系', options: ['没关系', '不用谢', '再见', '请问'], explanation: '没关系 = no importa. Respuesta a 对不起.' },
-  { context: 'Propones una actividad', A: '我们去游泳，___？', B: '太好了！', blankIn: 'A', answer: '好吗', options: ['好吗', '怎么', '什么', '对吗'], explanation: '...好吗 o ...可以吗 se usan para hacer sugerencias.' },
-  { context: 'No puedes quedar', A: '明天我们打球，好吗？', B: '很抱歉，___不行。', blankIn: 'B', answer: '恐怕', options: ['恐怕', '太', '很', '都'], explanation: '恐怕 = temo que... Se usa para rechazar educadamente.' },
-  { context: 'Te dan las gracias', A: '谢谢你！', B: '___！', blankIn: 'B', answer: '不用谢', options: ['不用谢', '没关系', '对不起', '再见'], explanation: '不用谢 = de nada. Respuesta a 谢谢.' },
-  { context: 'Pregunta sobre tu carrera', A: '你学习什么___？', B: '我学习中文。', blankIn: 'A', answer: '专业', options: ['专业', '名字', '工作', '时间'], explanation: '专业 = carrera / especialidad académica.' },
-  { context: 'Cuántas personas en tu familia', A: '你们家有___口人？', B: '我们家有四口人。', blankIn: 'A', answer: '几', options: ['几', '多少', '什么', '哪'], explanation: '几 se usa para preguntar números pequeños (con clasificador).' },
-  { context: 'Cuántos departamentos hay', A: '你们学院有___个系？', B: '有十二个系。', blankIn: 'A', answer: '多少', options: ['多少', '几', '什么', '哪'], explanation: '多少 se usa para números potencialmente grandes.' },
-  { context: 'Presentas a alguien', A: '这是我___王老师。', B: '您好！', blankIn: 'A', answer: '的', options: ['的', '了', '吗', '呢'], explanation: '的 conecta el posesor con lo poseído (mi profesor).' },
+  { context: 'Buscas el comedor en el campus', A: '请问，餐厅___哪儿？', B: '在二层。', blankIn: 'A', answer: '在', answerPinyin: 'zài', answerEs: 'estar / encontrarse en', options: ['在', '是', '去', '有'], explanation: '在 + 哪儿 pregunta la ubicación de un lugar.' },
+  { context: 'Preguntas si alguien está en casa', A: '请问，李明___吗？', B: '对不起，他不在。', blankIn: 'A', answer: '在', answerPinyin: 'zài', answerEs: 'estar presente', options: ['在', '来', '去', '好'], explanation: '在吗 = ¿está presente? / ¿está en casa?' },
+  { context: 'Alguien choca contigo', A: '对不起！', B: '___。', blankIn: 'B', answer: '没关系', answerPinyin: 'méi guānxi', answerEs: 'no importa', options: ['没关系', '不用谢', '再见', '请问'], explanation: '没关系 = no importa. Respuesta a 对不起.' },
+  { context: 'Propones una actividad', A: '我们去游泳，___？', B: '太好了！', blankIn: 'A', answer: '好吗', answerPinyin: 'hǎo ma', answerEs: '¿de acuerdo? / ¿bien?', options: ['好吗', '怎么', '什么', '对吗'], explanation: '...好吗 o ...可以吗 se usan para hacer sugerencias.' },
+  { context: 'No puedes quedar', A: '明天我们打球，好吗？', B: '很抱歉，___不行。', blankIn: 'B', answer: '恐怕', answerPinyin: 'kǒngpà', answerEs: 'temo que... / me temo', options: ['恐怕', '太', '很', '都'], explanation: '恐怕 = temo que... Se usa para rechazar educadamente.' },
+  { context: 'Te dan las gracias', A: '谢谢你！', B: '___！', blankIn: 'B', answer: '不用谢', answerPinyin: 'búyòng xiè', answerEs: 'de nada', options: ['不用谢', '没关系', '对不起', '再见'], explanation: '不用谢 = de nada. Respuesta a 谢谢.' },
+  { context: 'Pregunta sobre tu carrera', A: '你学习什么___？', B: '我学习中文。', blankIn: 'A', answer: '专业', answerPinyin: 'zhuānyè', answerEs: 'carrera / especialidad', options: ['专业', '名字', '工作', '时间'], explanation: '专业 = carrera / especialidad académica.' },
+  { context: 'Cuántas personas en tu familia', A: '你们家有___口人？', B: '我们家有四口人。', blankIn: 'A', answer: '几', answerPinyin: 'jǐ', answerEs: '¿cuántos? (número pequeño)', options: ['几', '多少', '什么', '哪'], explanation: '几 se usa para preguntar números pequeños (con clasificador).' },
+  { context: 'Cuántos departamentos hay', A: '你们学院有___个系？', B: '有十二个系。', blankIn: 'A', answer: '多少', answerPinyin: 'duōshao', answerEs: '¿cuántos? (cualquier número)', options: ['多少', '几', '什么', '哪'], explanation: '多少 se usa para números potencialmente grandes.' },
+  { context: 'Presentas a alguien', A: '这是我___王老师。', B: '您好！', blankIn: 'A', answer: '的', answerPinyin: 'de', answerEs: 'partícula posesiva', options: ['的', '了', '吗', '呢'], explanation: '的 conecta el posesor con lo poseído (mi profesor).' },
 ];
 
 const ORDEN_QUESTIONS = [
@@ -863,6 +863,7 @@ function App() {
       onSelectLesson: (id) => setScreen({ name: 'lesson', lessonId: id }),
       onAdmin: () => setScreen({ name: 'admin' }),
       onPrueba: (game) => setScreen({ name: 'prueba', game }),
+      pruebaProgress: progress.prueba || {},
     });
   } else if (screen.name === 'lesson') {
     content = html(LessonMenu, {
@@ -904,7 +905,14 @@ function App() {
       },
     });
   } else if (screen.name === 'prueba') {
-    const gameProps = { onBack: () => setScreen({ name: 'home' }) };
+    const onPruebaFinish = (percent) => {
+      setProgress(prev => {
+        const pp = prev.prueba || {};
+        const next = { ...prev, prueba: { ...pp, [screen.game]: Math.max(pp[screen.game] || 0, percent) } };
+        return next;
+      });
+    };
+    const gameProps = { onBack: () => setScreen({ name: 'home' }), onFinish: onPruebaFinish };
     if (screen.game === 'clas') content = html(ClasificadorGame, gameProps);
     else if (screen.game === 'dialogo') content = html(DialogoGame, gameProps);
     else if (screen.game === 'orden') content = html(OrdenGame, gameProps);
@@ -914,14 +922,14 @@ function App() {
 }
 
 // ----------------- Home -----------------
-function Home({ vocab, lessons, progress, totalWords, totalStars, onSelectLesson, onAdmin, onPrueba }) {
+function Home({ vocab, lessons, progress, totalWords, totalStars, onSelectLesson, onAdmin, onPrueba, pruebaProgress }) {
   return html(React.Fragment, null,
     html('div', { className: 'topbar' },
       html('div', { className: 'brand' },
         html('div', { className: 'brand-mark hanzi-font' }, '汉'),
         html('div', { className: 'brand-text' },
           html('strong', null, 'Hanzi Practice'),
-          html('span', null, 'Repaso de vocabulario'),
+          html('span', null, '汉语课 CUI · Nivel 2 · Ariel 老师'),
         ),
       ),
       html('button', { className: 'icon-btn', onClick: onAdmin, title: 'Administrar vocabulario' }, '⚙')
@@ -938,7 +946,7 @@ function Home({ vocab, lessons, progress, totalWords, totalStars, onSelectLesson
         ),
         html('div', { className: 'score-chip' },
           html('div', { className: 'num' }, totalStars + '/' + (lessons.length * 3)),
-          html('div', { className: 'lbl' }, 'sellos')
+          html('div', { className: 'lbl' }, 'estrellas')
         ),
       ),
       html('h2', { className: 'section-title' }, 'Elegí una lección'),
@@ -970,13 +978,18 @@ function Home({ vocab, lessons, progress, totalWords, totalStars, onSelectLesson
           { id: 'clas', icon: '🔢', cls: 'clas', title: 'Clasificadores', sub: 'Elige 个, 口, 张, 层 o 号 correctamente' },
           { id: 'dialogo', icon: '💬', cls: 'dial', title: 'Completa el diálogo', sub: 'Rellena el hueco de la conversación' },
           { id: 'orden', icon: '🔀', cls: 'orden', title: 'Ordena la oración', sub: 'Coloca las palabras en el orden correcto' },
-        ].map(g => html('button', { key: g.id, className: 'prueba-card', onClick: () => onPrueba(g.id) },
-          html('div', { className: 'prueba-icon ' + g.cls }, g.icon),
-          html('div', null,
-            html('div', { className: 'mode-title' }, g.title),
-            html('div', { className: 'mode-sub' }, g.sub),
-          )
-        ))
+        ].map(g => {
+          const best = pruebaProgress[g.id] || 0;
+          const hasStar = best >= 80;
+          return html('button', { key: g.id, className: 'prueba-card', onClick: () => onPrueba(g.id) },
+            html('div', { className: 'prueba-icon ' + g.cls }, g.icon),
+            html('div', { style: { flex: 1 } },
+              html('div', { className: 'mode-title' }, g.title),
+              html('div', { className: 'mode-sub' }, best > 0 ? '⭐ Mejor: ' + best + '%' : g.sub),
+            ),
+            hasStar && html('div', { style: { fontSize: 20 } }, '⭐'),
+          );
+        })
       )
     )
   );
@@ -1520,9 +1533,10 @@ function PruebaResult({ percent, total, correct, missed, onRetry, onBack }) {
 }
 
 // ----------------- Prueba: Clasificadores -----------------
-function ClasificadorGame({ onBack }) {
+function ClasificadorGame({ onBack, onFinish }) {
   const questions = useMemo(() => shuffle(CLASIFICADOR_QUESTIONS), []);
   const [index, setIndex] = useState(0);
+  const [opts, setOpts] = useState(() => shuffle([...questions[0].options]));
   const [selected, setSelected] = useState(null);
   const [correct, setCorrect] = useState(0);
   const [errors, setErrors] = useState(0);
@@ -1530,32 +1544,37 @@ function ClasificadorGame({ onBack }) {
   const [done, setDone] = useState(false);
 
   const q = questions[index];
+  const isCorrect = selected && selected === q.answer;
+  const parts = q.sentence.split('___');
+  const fullSentence = q.sentence.replace('___', q.answer);
+  const fullPinyin = q.pinyin.replace('___', q.answer);
 
   const handlePick = (opt) => {
     if (selected) return;
     setSelected(opt);
-    const isCorrect = opt === q.answer;
-    if (isCorrect) setCorrect(c => c + 1);
+    const ok = opt === q.answer;
+    const newCorrect = correct + (ok ? 1 : 0);
+    if (ok) setCorrect(newCorrect);
     else {
       setErrors(e => e + 1);
-      setMissed(m => [...m, { hanzi: q.sentence.replace('___', q.answer), pinyin: q.pinyin.replace('___', q.answer), es: q.hint }]);
+      setMissed(m => [...m, { hanzi: fullSentence, pinyin: fullPinyin, es: q.hint }]);
     }
     setTimeout(() => {
-      if (index + 1 >= questions.length) setDone(true);
-      else { setIndex(i => i + 1); setSelected(null); }
-    }, 1000);
+      const next = index + 1;
+      if (next >= questions.length) {
+        const pct = Math.round((newCorrect / questions.length) * 100);
+        if (onFinish) onFinish(pct);
+        setDone(true);
+      } else { setIndex(next); setOpts(shuffle([...questions[next].options])); setSelected(null); }
+    }, 2000);
   };
 
   if (done) return html(PruebaResult, {
     percent: Math.round((correct / questions.length) * 100),
     total: questions.length, correct, missed,
-    onRetry: () => { setIndex(0); setSelected(null); setCorrect(0); setErrors(0); setMissed([]); setDone(false); },
+    onRetry: () => { setIndex(0); setOpts(shuffle([...questions[0].options])); setSelected(null); setCorrect(0); setErrors(0); setMissed([]); setDone(false); },
     onBack,
   });
-
-  const isCorrect = selected && selected === q.answer;
-  const isWrong = selected && selected !== q.answer;
-  const parts = q.sentence.split('___');
 
   return html(React.Fragment, null,
     html('main', { style: { paddingTop: '18px' } },
@@ -1573,26 +1592,30 @@ function ClasificadorGame({ onBack }) {
         html('span', { className: 'clas-blank', style: selected ? { color: isCorrect ? 'var(--jade-dark)' : 'var(--error)' } : {} }, selected || ''),
         parts[1] || ''
       ),
-      html('div', { className: 'clas-pinyin' }, q.pinyin),
+      html('div', { className: 'clas-pinyin' }, selected ? fullPinyin : q.pinyin),
       html('div', { className: 'clas-hint' }, q.hint),
       selected
-        ? html('div', { style: { borderRadius: 16, padding: '18px 20px', textAlign: 'center', fontWeight: 800, fontSize: 22, marginBottom: 12,
+        ? html('div', { style: { borderRadius: 16, padding: '18px 20px', textAlign: 'center', fontWeight: 800, marginBottom: 12,
             background: isCorrect ? 'var(--jade-light)' : '#FDE4DD',
             color: isCorrect ? 'var(--jade-dark)' : 'var(--lacquer-dark)' } },
             html('div', { style: { fontSize: 40 } }, isCorrect ? '✓' : '✗'),
-            isCorrect ? '¡Correcto!' : 'Incorrecto'
+            html('div', { style: { fontSize: 22, marginTop: 4 } }, isCorrect ? '¡Correcto!' : 'Incorrecto'),
+            html('div', { className: 'hanzi-font', style: { fontSize: 26, marginTop: 10 } }, fullSentence),
+            html('div', { style: { fontSize: 14, marginTop: 4, opacity: 0.85 } }, fullPinyin),
+            html('div', { style: { fontSize: 13, marginTop: 2, opacity: 0.75 } }, q.hint),
           )
         : html('div', { className: 'quiz-options' },
-            q.options.map(opt => html('button', { key: opt, className: 'quiz-option', onClick: () => handlePick(opt) }, opt))
+            opts.map(opt => html('button', { key: opt, className: 'quiz-option', onClick: () => handlePick(opt) }, opt))
           )
     )
   );
 }
 
 // ----------------- Prueba: Diálogo -----------------
-function DialogoGame({ onBack }) {
+function DialogoGame({ onBack, onFinish }) {
   const questions = useMemo(() => shuffle(DIALOGO_QUESTIONS), []);
   const [index, setIndex] = useState(0);
+  const [opts, setOpts] = useState(() => shuffle([...questions[0].options]));
   const [selected, setSelected] = useState(null);
   const [correct, setCorrect] = useState(0);
   const [errors, setErrors] = useState(0);
@@ -1600,33 +1623,36 @@ function DialogoGame({ onBack }) {
   const [done, setDone] = useState(false);
 
   const q = questions[index];
+  const isCorrect = selected && selected === q.answer;
 
   const handlePick = (opt) => {
     if (selected) return;
     setSelected(opt);
-    const isCorrect = opt === q.answer;
-    if (isCorrect) setCorrect(c => c + 1);
+    const ok = opt === q.answer;
+    const newCorrect = correct + (ok ? 1 : 0);
+    if (ok) setCorrect(newCorrect);
     else {
       setErrors(e => e + 1);
       const full = (q.blankIn === 'A' ? q.A : q.B).replace('___', q.answer);
-      setMissed(m => [...m, { hanzi: full, pinyin: q.explanation, es: q.context }]);
+      setMissed(m => [...m, { hanzi: full, pinyin: q.answerPinyin, es: q.answerEs }]);
     }
   };
 
   const handleNext = () => {
-    if (index + 1 >= questions.length) setDone(true);
-    else { setIndex(i => i + 1); setSelected(null); }
+    const next = index + 1;
+    if (next >= questions.length) {
+      const pct = Math.round((correct / questions.length) * 100);
+      if (onFinish) onFinish(pct);
+      setDone(true);
+    } else { setIndex(next); setOpts(shuffle([...questions[next].options])); setSelected(null); }
   };
 
   if (done) return html(PruebaResult, {
     percent: Math.round((correct / questions.length) * 100),
     total: questions.length, correct, missed,
-    onRetry: () => { setIndex(0); setSelected(null); setCorrect(0); setErrors(0); setMissed([]); setDone(false); },
+    onRetry: () => { setIndex(0); setOpts(shuffle([...questions[0].options])); setSelected(null); setCorrect(0); setErrors(0); setMissed([]); setDone(false); },
     onBack,
   });
-
-  const isCorrect = selected && selected === q.answer;
-  const isWrong = selected && selected !== q.answer;
 
   const renderLine = (speaker, text, hasBlank) => {
     const parts = text.split('___');
@@ -1637,6 +1663,15 @@ function DialogoGame({ onBack }) {
         : text
     );
   };
+
+  const FeedbackBox = ({ bg, color, icon, label, hanzi, pinyin, es }) =>
+    html('div', { style: { borderRadius: 14, padding: '12px 16px', background: bg, color, marginBottom: 8, textAlign: 'center' } },
+      html('div', { style: { fontSize: 28 } }, icon),
+      html('div', { style: { fontWeight: 800, fontSize: 17, margin: '4px 0' } }, label),
+      html('div', { className: 'hanzi-font', style: { fontSize: 22 } }, hanzi),
+      html('div', { style: { fontSize: 13, marginTop: 2, fontWeight: 700 } }, pinyin),
+      html('div', { style: { fontSize: 12, marginTop: 1, opacity: 0.8 } }, es),
+    );
 
   return html(React.Fragment, null,
     html('main', { style: { paddingTop: '18px' } },
@@ -1656,19 +1691,23 @@ function DialogoGame({ onBack }) {
       ),
       selected
         ? html(React.Fragment, null,
-            html('div', { style: { borderRadius: 16, padding: '16px 20px', textAlign: 'center', fontWeight: 800, fontSize: 20, marginBottom: 12,
-                background: isCorrect ? 'var(--jade-light)' : '#FDE4DD',
-                color: isCorrect ? 'var(--jade-dark)' : 'var(--lacquer-dark)' } },
-              html('div', { style: { fontSize: 36 } }, isCorrect ? '✓' : '✗'),
-              isCorrect ? '¡Correcto!' : 'Incorrecto — ' + q.answer
-            ),
+            !isCorrect && html(FeedbackBox, {
+              bg: '#FDE4DD', color: 'var(--lacquer-dark)', icon: '✗', label: 'Elegiste: ' + selected,
+              hanzi: selected, pinyin: '', es: 'Incorrecto',
+            }),
+            html(FeedbackBox, {
+              bg: 'var(--jade-light)', color: 'var(--jade-dark)',
+              icon: isCorrect ? '✓' : '→',
+              label: isCorrect ? '¡Correcto!' : 'Correcto:',
+              hanzi: q.answer, pinyin: q.answerPinyin, es: q.answerEs,
+            }),
             html('div', { className: 'dialogo-explanation' }, '💡 ' + q.explanation),
             html('button', { className: 'primary-btn', onClick: handleNext },
               index + 1 >= questions.length ? 'Ver resultado' : 'Siguiente →'
             )
           )
         : html('div', { className: 'quiz-options' },
-            q.options.map(opt => html('button', { key: opt, className: 'quiz-option', onClick: () => handlePick(opt) }, opt))
+            opts.map(opt => html('button', { key: opt, className: 'quiz-option', onClick: () => handlePick(opt) }, opt))
           )
     )
   );
@@ -1677,7 +1716,7 @@ function DialogoGame({ onBack }) {
 // ----------------- Prueba: Ordenar -----------------
 const CIRCLE_NUMS = ['①','②','③','④','⑤','⑥','⑦','⑧'];
 
-function OrdenGame({ onBack }) {
+function OrdenGame({ onBack, onFinish }) {
   const questions = useMemo(() => shuffle(ORDEN_QUESTIONS), []);
   const [index, setIndex] = useState(0);
   const [placed, setPlaced] = useState([]);
@@ -1712,7 +1751,8 @@ function OrdenGame({ onBack }) {
     const answer = placed.map(x => x.w).join('');
     const isCorrect = answer === q.correct;
     setChecked(isCorrect ? 'correct' : 'wrong');
-    if (isCorrect) setCorrect(c => c + 1);
+    const newCorrect = correct + (isCorrect ? 1 : 0);
+    if (isCorrect) setCorrect(newCorrect);
     else {
       setErrors(e => e + 1);
       setMissed(m => [...m, { hanzi: q.correct, pinyin: q.pinyin, es: q.es }]);
@@ -1721,8 +1761,11 @@ function OrdenGame({ onBack }) {
 
   const handleNext = () => {
     const nextIdx = index + 1;
-    if (nextIdx >= questions.length) setDone(true);
-    else { setIndex(nextIdx); loadQ(nextIdx); }
+    if (nextIdx >= questions.length) {
+      const pct = Math.round((correct / questions.length) * 100);
+      if (onFinish) onFinish(pct);
+      setDone(true);
+    } else { setIndex(nextIdx); loadQ(nextIdx); }
   };
 
   if (done) return html(PruebaResult, {
@@ -1743,17 +1786,20 @@ function OrdenGame({ onBack }) {
         html('div', { className: 'flash-score-chip no' }, html('i', null, '✕'), 'Errores: ' + errors),
         html('div', { className: 'flash-score-chip yes' }, html('i', null, '✓'), 'Correctas: ' + correct),
       ),
-      html('div', { className: 'orden-hint' }, q.pinyin),
+      html('div', { className: 'orden-hint' }, 'Toca las palabras en el orden correcto'),
       html('div', { className: 'orden-answer-zone' + (checked === 'correct' ? ' correct-zone' : checked === 'wrong' ? ' wrong-zone' : '') },
         placed.length === 0
           ? html('span', { style: { color: 'var(--ink-soft)', fontSize: 13, fontWeight: 700 } }, 'Toca las palabras de abajo...')
           : placed.map(item => html('button', { key: 'p' + item.i, className: 'word-chip placed', onClick: () => tapPlaced(item) }, item.w))
       ),
-      checked && html('div', { style: { borderRadius: 16, padding: '16px 20px', textAlign: 'center', fontWeight: 800, fontSize: 20, marginBottom: 10,
+      checked && html('div', { style: { borderRadius: 16, padding: '16px 20px', textAlign: 'center', fontWeight: 800, marginBottom: 10,
           background: checked === 'correct' ? 'var(--jade-light)' : '#FDE4DD',
           color: checked === 'correct' ? 'var(--jade-dark)' : 'var(--lacquer-dark)' } },
         html('div', { style: { fontSize: 36 } }, checked === 'correct' ? '✓' : '✗'),
-        checked === 'correct' ? ('¡Correcto! · ' + q.es) : 'Incorrecto'
+        html('div', { style: { fontSize: 20, margin: '4px 0' } }, checked === 'correct' ? '¡Correcto!' : 'Incorrecto'),
+        html('div', { className: 'hanzi-font', style: { fontSize: 22, marginTop: 8 } }, q.correct),
+        html('div', { style: { fontSize: 14, marginTop: 4, fontWeight: 700 } }, q.pinyin),
+        html('div', { style: { fontSize: 13, marginTop: 2, opacity: 0.8 } }, q.es),
       ),
       checked === 'wrong' && html('div', { className: 'orden-numbered' },
         q.words.map((w, i) => html('div', { key: i, className: 'orden-numbered-item' },
